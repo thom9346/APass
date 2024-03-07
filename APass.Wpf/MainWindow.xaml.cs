@@ -1,4 +1,6 @@
-﻿using APass.Core.Interfaces;
+﻿using APass.Core.Entities;
+using APass.Core.Interfaces;
+using System.Collections.ObjectModel;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -18,16 +20,32 @@ namespace APass.Wpf
     public partial class MainWindow : Window
     {
         private readonly ICryptographicManager _cryptoManager;
+        private ObservableCollection<PasswordEntry> _passwordEntries;
+
 
         public MainWindow(ICryptographicManager cryptoManager)
         {
             _cryptoManager = cryptoManager;
             InitializeComponent();
+            InitializePasswordEntriesList();
+
+        }
+        private void InitializePasswordEntriesList()
+        {
+            // Initialize the ObservableCollection
+            _passwordEntries = new ObservableCollection<PasswordEntry>();
+            PasswordsList.ItemsSource = _passwordEntries;
         }
         private void AddPassword_Click(object sender, RoutedEventArgs e)
         {
             AddPasswordWindow addPasswordWindow = new AddPasswordWindow(_cryptoManager);
-            addPasswordWindow.ShowDialog(); // Show the Add Password window as a dialog
+            var result = addPasswordWindow.ShowDialog(); // Show the Add Password window as a dialog
+
+            if (result == true)
+            {
+                PasswordEntry newPassword = addPasswordWindow.NewPasswordEntry;
+                _passwordEntries.Add(newPassword);
+            }
         }
     }
 }

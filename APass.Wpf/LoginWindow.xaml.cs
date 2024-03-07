@@ -31,8 +31,6 @@ namespace APass.Wpf
         {
             var masterPassword = PasswordBox.Password;
 
-            // Here, implement your logic to verify the master password.
-            // This is a placeholder for the actual verification logic.
             bool isValid = CheckMasterPassword(masterPassword);
 
             if (isValid)
@@ -51,7 +49,6 @@ namespace APass.Wpf
         private bool CheckMasterPassword(string password)
         {
             // Placeholder for actual implementation
-            // You would typically hash the input password and compare it with a stored hash
             return true; // Change this to actual verification logic
         }
     }

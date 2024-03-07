@@ -27,7 +27,6 @@ namespace APass.Wpf
             services.AddSingleton<ICryptographicManager, CryptographicManager>();
             services.AddTransient<LoginWindow>();
 
-            // Add other services here
         }
 
         protected override void OnStartup(StartupEventArgs e)
