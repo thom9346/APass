@@ -1,5 +1,6 @@
 ﻿using APass.Core.Entities;
 using APass.Core.Interfaces;
+using APass.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,10 +24,13 @@ namespace APass.Wpf
     public partial class AddPasswordWindow : Window
     {
         private readonly ICryptographicManager _cryptoManager;
+        private readonly PasswordManagerContext _dbContext;
+
         public PasswordEntry NewPasswordEntry { get; private set; }
-        public AddPasswordWindow(ICryptographicManager cryptoManager)
+        public AddPasswordWindow(ICryptographicManager cryptoManager, PasswordManagerContext dbContext)
         {
             _cryptoManager = cryptoManager;
+            _dbContext = dbContext;
             InitializeComponent();
         }
         private async void Add_Click(object sender, RoutedEventArgs e)
@@ -34,14 +38,14 @@ namespace APass.Wpf
             //change id
             NewPasswordEntry = new PasswordEntry
             {   
-                ID = 1, 
                 Website = WebsiteTextBox.Text,
                 Username = UsernameTextBox.Text,
                 Password = PasswordBox.Password
             };
+            _dbContext.PasswordEntries.Add(NewPasswordEntry);
+            await _dbContext.SaveChangesAsync();
 
             this.DialogResult = true; // Indicate successful entry
-
             this.Close();
         }
         private void Button_MouseDown(object sender, MouseButtonEventArgs e)

@@ -1,4 +1,6 @@
-﻿using APass.Core.Interfaces;
+﻿using APass.Core.Entities;
+using APass.Core.Interfaces;
+using APass.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,10 +23,17 @@ namespace APass.Wpf
     public partial class LoginWindow : Window
     {
         private readonly ICryptographicManager _cryptoManager;
+        private IRepository<PasswordEntry> _passwordEntryRepository;
+        private readonly PasswordManagerContext _dbContext;
 
-        public LoginWindow(ICryptographicManager cryptoManager)
+        public LoginWindow(
+            ICryptographicManager cryptoManager,
+            PasswordManagerContext dbContext,
+            IRepository<PasswordEntry> passwordEntryRepository)
         {
             _cryptoManager = cryptoManager;
+            _dbContext = dbContext;
+            _passwordEntryRepository = passwordEntryRepository;
             InitializeComponent();
         }
         private void Login_Click(object sender, RoutedEventArgs e)
@@ -35,8 +44,7 @@ namespace APass.Wpf
 
             if (isValid)
             {
-                // Open the MainWindow and close the LoginWindow
-                MainWindow mainWindow = new MainWindow(_cryptoManager);
+                MainWindow mainWindow = new MainWindow(_cryptoManager, _dbContext, _passwordEntryRepository);
                 mainWindow.Show();
                 this.Close();
             }
