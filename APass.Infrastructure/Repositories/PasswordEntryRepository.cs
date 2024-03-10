@@ -17,7 +17,8 @@ namespace APass.Infrastructure.Repositories
         }
         public void Add(PasswordEntry entity)
         {
-            throw new NotImplementedException();
+            _db.PasswordEntries.Add(entity);
+            _db.SaveChanges();
         }
 
         public void Edit(PasswordEntry entity)
@@ -32,7 +33,7 @@ namespace APass.Infrastructure.Repositories
 
         public IEnumerable<PasswordEntry> GetAll()
         {
-            throw new NotImplementedException();
+            return _db.PasswordEntries.ToList();
         }
 
         public bool Remove(int id)

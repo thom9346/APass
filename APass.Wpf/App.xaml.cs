@@ -32,8 +32,8 @@ namespace APass.Wpf
             services.AddDbContext<PasswordManagerContext>();
             services.AddSingleton<ICryptographicManager, CryptographicManager>();
             services.AddSingleton<IRepository<PasswordEntry>, PasswordEntryRepository>();
+            services.AddSingleton<IRepository<MasterPassword>, MasterPasswordRepository>();
             services.AddTransient<LoginWindow>();
-
         }
 
         protected override void OnStartup(StartupEventArgs e)

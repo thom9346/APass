@@ -2,6 +2,7 @@
 using APass.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -9,9 +10,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace APass.Infrastructure.Migrations
 {
     [DbContext(typeof(PasswordManagerContext))]
-    partial class PasswordManagerContextModelSnapshot : ModelSnapshot
+    [Migration("20240309154008_AddedMasterPassword")]
+    partial class AddedMasterPassword
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.2");
@@ -32,7 +35,7 @@ namespace APass.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("MasterPasswords", (string)null);
+                    b.ToTable("MasterPasswords");
                 });
 
             modelBuilder.Entity("APass.Core.Entities.PasswordEntry", b =>
@@ -55,7 +58,7 @@ namespace APass.Infrastructure.Migrations
 
                     b.HasKey("ID");
 
-                    b.ToTable("PasswordEntries", (string)null);
+                    b.ToTable("PasswordEntries");
                 });
 #pragma warning restore 612, 618
         }

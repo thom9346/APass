@@ -28,7 +28,7 @@
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
-                                    <Button Content="Copy" Click="CopyPassword_Click" CommandParameter="{Binding Password}">
+                                    <Button Content="Copy" Click="CopyPassword_Click" CommandParameter="{Binding}">
                                         <Button.ToolTip>
                                             <ToolTip Content="Copy Password" />
                                         </Button.ToolTip>

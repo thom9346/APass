@@ -10,6 +10,7 @@ namespace APass.Infrastructure
         {
         }
         public DbSet<PasswordEntry> PasswordEntries { get; set; }
+        public DbSet<MasterPassword> MasterPasswords { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -23,6 +24,12 @@ namespace APass.Infrastructure
             modelBuilder.Entity<PasswordEntry>()
                 .Property(pe => pe.ID)
                 .ValueGeneratedOnAdd(); // Configure ID to auto-generate
+
+            modelBuilder.Entity<MasterPassword>()
+               .HasKey(mp => mp.Id);
+            modelBuilder.Entity<MasterPassword>()
+                .Property(mp => mp.Id)
+                .ValueGeneratedOnAdd();
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using APass.Core.Entities;
 using APass.Core.Interfaces;
+using APass.Core.Services;
 using APass.Infrastructure;
 using System;
 using System.Collections.Generic;
@@ -24,29 +25,50 @@ namespace APass.Wpf
     public partial class AddPasswordWindow : Window
     {
         private readonly ICryptographicManager _cryptoManager;
-        private readonly PasswordManagerContext _dbContext;
+        private IRepository<PasswordEntry> _passwordEntryRepository;
 
         public PasswordEntry NewPasswordEntry { get; private set; }
-        public AddPasswordWindow(ICryptographicManager cryptoManager, PasswordManagerContext dbContext)
+        public AddPasswordWindow(ICryptographicManager cryptoManager, IRepository<PasswordEntry> passwordEntryRepository)
         {
             _cryptoManager = cryptoManager;
-            _dbContext = dbContext;
+            _passwordEntryRepository = passwordEntryRepository;
             InitializeComponent();
         }
-        private async void Add_Click(object sender, RoutedEventArgs e)
+        private void Add_Click(object sender, RoutedEventArgs e)
         {
-            //change id
-            NewPasswordEntry = new PasswordEntry
-            {   
-                Website = WebsiteTextBox.Text,
-                Username = UsernameTextBox.Text,
-                Password = PasswordBox.Password
-            };
-            _dbContext.PasswordEntries.Add(NewPasswordEntry);
-            await _dbContext.SaveChangesAsync();
+            try
+            {
+                var website = WebsiteTextBox.Text;
+                var username = UsernameTextBox.Text;
+                var plaintextPassword = PasswordBox.Password;
 
-            this.DialogResult = true; // Indicate successful entry
-            this.Close();
+                // Assuming you retrieve the DEK securely when the window is opened or when needed
+                var dek = SecureSessionService.GetDEK(); // Retrieve DEK securely
+
+                // Convert the plaintext password to a byte array
+                var plaintextBytes = Encoding.UTF8.GetBytes(plaintextPassword);
+
+                // Encrypt the password
+                var encryptedPasswordWithIV = _cryptoManager.Encrypt(plaintextBytes, dek);
+
+                // Convert encrypted byte array to a base64 string for storage
+                var encryptedPasswordBase64 = Convert.ToBase64String(encryptedPasswordWithIV);
+
+                NewPasswordEntry = new PasswordEntry
+                {
+                    Website = website,
+                    Username = username,
+                    Password = encryptedPasswordBase64
+                };
+
+                _passwordEntryRepository.Add(NewPasswordEntry);
+                this.DialogResult = true; // Indicate successful entry
+                this.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to add password: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
         private void Button_MouseDown(object sender, MouseButtonEventArgs e)
         {

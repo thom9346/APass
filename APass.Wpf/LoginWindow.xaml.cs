@@ -1,40 +1,26 @@
 ﻿using APass.Core.Entities;
 using APass.Core.Interfaces;
-using APass.Infrastructure;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using APass.Core.Services;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace APass.Wpf
 {
-    /// <summary>
-    /// Interaction logic for LoginWindow.xaml
-    /// </summary>
     public partial class LoginWindow : Window
     {
         private readonly ICryptographicManager _cryptoManager;
         private IRepository<PasswordEntry> _passwordEntryRepository;
-        private readonly PasswordManagerContext _dbContext;
+        private IRepository<MasterPassword> _masterPasswordEntryRepository;
 
         public LoginWindow(
             ICryptographicManager cryptoManager,
-            PasswordManagerContext dbContext,
-            IRepository<PasswordEntry> passwordEntryRepository)
+            IRepository<PasswordEntry> passwordEntryRepository,
+            IRepository<MasterPassword> masterPasswordEntryRepository)
         {
             _cryptoManager = cryptoManager;
-            _dbContext = dbContext;
             _passwordEntryRepository = passwordEntryRepository;
             InitializeComponent();
+            _masterPasswordEntryRepository = masterPasswordEntryRepository;
         }
         private void Login_Click(object sender, RoutedEventArgs e)
         {
@@ -44,7 +30,7 @@ namespace APass.Wpf
 
             if (isValid)
             {
-                MainWindow mainWindow = new MainWindow(_cryptoManager, _dbContext, _passwordEntryRepository);
+                MainWindow mainWindow = new MainWindow(_cryptoManager, _passwordEntryRepository);
                 mainWindow.Show();
                 this.Close();
             }
@@ -56,8 +42,39 @@ namespace APass.Wpf
 
         private bool CheckMasterPassword(string password)
         {
-            // Placeholder for actual implementation
-            return true; // Change this to actual verification logic
+            // Retrieve the stored MasterPassword entity, which contains your salt and encrypted DEK
+            MasterPassword masterPasswordEntity = _masterPasswordEntryRepository.Get(1);
+            if (masterPasswordEntity == null)
+            {
+                MessageBox.Show("Master Password setup is required.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }
+
+            byte[] salt = masterPasswordEntity.Salt;
+            byte[] encryptedDEK = masterPasswordEntity.EncryptedDEK;
+
+            // Re-derive the KEK (Key Encryption Key) from the entered password and the stored salt
+            byte[] derivedKey = _cryptoManager.DeriveKey(password, salt, 10000, 32);
+
+            try
+            {
+                // Attempt to decrypt the DEK with the derived KEK
+                // This step is to verify that the provided master password is correct
+                // If the password is incorrect, decryption will fail and throw an exception
+                byte[] dek = _cryptoManager.Decrypt(encryptedDEK, derivedKey);
+                SecureSessionService.StoreDEK(dek);
+                return true;
+            }
+            catch
+            {
+                // If decryption fails, it means the entered password is incorrect
+                return false;
+            }
+        }
+        private void SignUp_Click(object sender, RoutedEventArgs e)
+        {
+            SignupWindow signUpWindow = new SignupWindow(_cryptoManager, _masterPasswordEntryRepository);
+            signUpWindow.ShowDialog();
         }
     }
 }
