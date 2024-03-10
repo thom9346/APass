@@ -42,7 +42,6 @@ namespace APass.Wpf
 
         private bool CheckMasterPassword(string password)
         {
-            // Retrieve the stored MasterPassword entity, which contains your salt and encrypted DEK
             MasterPassword masterPasswordEntity = _masterPasswordEntryRepository.Get(1);
             if (masterPasswordEntity == null)
             {
@@ -58,9 +57,6 @@ namespace APass.Wpf
 
             try
             {
-                // Attempt to decrypt the DEK with the derived KEK
-                // This step is to verify that the provided master password is correct
-                // If the password is incorrect, decryption will fail and throw an exception
                 byte[] dek = _cryptoManager.Decrypt(encryptedDEK, derivedKey);
                 SecureSessionService.StoreDEK(dek);
                 return true;

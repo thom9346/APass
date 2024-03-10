@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace APass.Core.Services
 {
     public static class SecureSessionService
@@ -12,7 +7,7 @@ namespace APass.Core.Services
 
         public static void StoreDEK(byte[] dek)
         {
-            ClearDEK(); //Ensure any existing DEK is cleared
+            ClearDEK();
             _dek = dek;
         }
 
@@ -26,7 +21,6 @@ namespace APass.Core.Services
         {
             if (_dek != null)
             {
-                //erase the DEK from memory
                 Array.Clear(_dek, 0, _dek.Length);
                 _dek = null;
             }

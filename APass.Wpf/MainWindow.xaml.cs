@@ -5,7 +5,6 @@ using System.Collections.ObjectModel;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
 
 namespace APass.Wpf
 {
@@ -41,18 +40,14 @@ namespace APass.Wpf
             //    InitializePasswordEntriesList();
             //}
 
-            // Example of securely using the DEK
             try
             {
                 var dek = SecureSessionService.GetDEK();
-                // Use the DEK for necessary operations, e.g., decrypting something for display
                 InitializePasswordEntriesList();
-                // Immediately clear any sensitive data after use
             }
             catch (InvalidOperationException ex)
             {
-                MessageBox.Show("Session expired or DEK not available.", "Session Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                // Consider redirecting the user back to the LoginWindow or closing the application
+                MessageBox.Show("DEK not available. Close the application and start over again.", "Session Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
         private void InitializePasswordEntriesList()
@@ -78,14 +73,12 @@ namespace APass.Wpf
             {
                 if (sender is Button btn && btn.CommandParameter is PasswordEntry entry)
                 {
-                    var encryptedData = Convert.FromBase64String(entry.Password); // Decode the Base64 string
-                    var dek = SecureSessionService.GetDEK(); // Securely retrieve DEK
+                    var encryptedData = Convert.FromBase64String(entry.Password); 
+                    var dek = SecureSessionService.GetDEK(); 
 
-                    // Decrypt the password
                     var decryptedBytes = _cryptoManager.Decrypt(encryptedData, dek);
-                    var decryptedPassword = Encoding.UTF8.GetString(decryptedBytes); // Convert decrypted bytes back to string
+                    var decryptedPassword = Encoding.UTF8.GetString(decryptedBytes);
 
-                    // Copy decrypted password to clipboard
                     Clipboard.SetText(decryptedPassword);
 
                     var originalToolTip = (ToolTip)btn.ToolTip;

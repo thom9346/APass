@@ -1,21 +1,10 @@
 ﻿using APass.Core.Entities;
 using APass.Core.Interfaces;
 using APass.Core.Services;
-using APass.Infrastructure;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace APass.Wpf
 {
@@ -42,8 +31,7 @@ namespace APass.Wpf
                 var username = UsernameTextBox.Text;
                 var plaintextPassword = PasswordBox.Password;
 
-                // Assuming you retrieve the DEK securely when the window is opened or when needed
-                var dek = SecureSessionService.GetDEK(); // Retrieve DEK securely
+                var dek = SecureSessionService.GetDEK();
 
                 // Convert the plaintext password to a byte array
                 var plaintextBytes = Encoding.UTF8.GetBytes(plaintextPassword);

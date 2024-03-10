@@ -57,7 +57,6 @@ namespace APass.Core.Services
                     {
                         decryptedData.Add((byte)b);
                     }
-
                     return decryptedData.ToArray();
                 }
             }
