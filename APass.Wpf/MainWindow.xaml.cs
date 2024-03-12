@@ -41,7 +41,7 @@ namespace APass.Wpf
             }
             catch (InvalidOperationException ex)
             {
-                MessageBox.Show("DEK not available. Close the application and start over again.", "Session Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                RedirectUserToLogin("Session has expired, please log in again.");
             }
         }
         private void InitializePasswordEntriesList()
@@ -79,7 +79,7 @@ namespace APass.Wpf
                     originalToolTip.Content = "Password copied!";
                     originalToolTip.IsOpen = true;
 
-                    // Wait for a short period before reverting the tooltip content
+                    //wait before reverting the tooltip content
                     await Task.Delay(2000);
 
                     originalToolTip.Content = "Copy Password";

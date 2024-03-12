@@ -19,8 +19,9 @@ namespace APass.Wpf
         {
             _cryptoManager = cryptoManager;
             _passwordEntryRepository = passwordEntryRepository;
-            InitializeComponent();
             _masterPasswordEntryRepository = masterPasswordEntryRepository;
+
+            InitializeComponent();
         }
         private void Login_Click(object sender, RoutedEventArgs e)
         {
@@ -30,7 +31,7 @@ namespace APass.Wpf
 
             if (isValid)
             {
-                // Check if MainWindow is already open
+                //check if MainWindow is already open
                 var mainWindow = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
                 if (mainWindow == null)
                 {
@@ -57,7 +58,7 @@ namespace APass.Wpf
             byte[] salt = masterPasswordEntity.Salt;
             byte[] encryptedDEK = masterPasswordEntity.EncryptedDEK;
 
-            // Re-derive the KEK (Key Encryption Key) from the entered password and the stored salt
+            //re-derive the KEK (Key Encryption Key) from the entered password and the stored salt
             byte[] derivedKey = _cryptoManager.DeriveKey(password, salt, 10000, 32);
 
             try
@@ -68,7 +69,7 @@ namespace APass.Wpf
             }
             catch
             {
-                // If decryption fails, it means the entered password is incorrect
+                //if decryption fails, it means the entered password is incorrect
                 return false;
             }
         }

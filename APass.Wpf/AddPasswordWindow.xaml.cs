@@ -48,7 +48,7 @@ namespace APass.Wpf
                 };
 
                 _passwordEntryRepository.Add(NewPasswordEntry);
-                this.DialogResult = true; // Indicate successful entry
+                this.DialogResult = true;
                 this.Close();
             }
             catch (InvalidOperationException ex)
@@ -83,7 +83,7 @@ namespace APass.Wpf
         {
             //fixed size of 16 is probably secure enough, but this adds some entropy i guess
             Random rdm = new Random();
-            var rdmLength = rdm.Next(16, 64 + 1);
+            var rdmLength = rdm.Next(16, 32 + 1);
 
             PasswordBox.Password = GenerateSecurePassword(rdmLength);
         }
