@@ -24,6 +24,7 @@ namespace APass.Infrastructure.Repositories
             }
         }
 
+
         public void Edit(MasterPassword entity)
         {
             throw new NotImplementedException();

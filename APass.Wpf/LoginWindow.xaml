@@ -17,7 +17,7 @@
         <TextBlock Text="Enter Master Password:" Grid.Row="0"/>
         <PasswordBox x:Name="PasswordBox" Grid.Row="1" Margin="0,10"/>
 
-        <Button Content="Login" Grid.Row="2" Click="Login_Click" Margin="0,0,0,20"/>
+        <Button Content="Login" Grid.Row="2" Click="Login_Click" Margin="0,0,0,20" IsDefault="True"/>
         <StackPanel Grid.Row="3" HorizontalAlignment="Center" Margin="0,20,0,0"/>
         <TextBlock TextAlignment="Center" Foreground="Blue" Margin="48,34,48,10" Grid.Row="2" Grid.RowSpan="2"><Run Text="Don't have a master password yet?"/></TextBlock>
         <TextBlock TextAlignment="Center" Foreground="Blue" Cursor="Hand" MouseUp="SignUp_Click" Margin="48,10,48,-6" Grid.Row="3"><Run Text="Sign up!" TextDecorations="Underline" FontWeight="Bold"/></TextBlock>

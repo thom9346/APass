@@ -15,31 +15,25 @@ namespace APass.Wpf
     {
         private readonly ICryptographicManager _cryptoManager;
         private IRepository<PasswordEntry> _passwordEntryRepository;
+        private IRepository<MasterPassword> _masterPasswordEntryRepository;
+
         private ObservableCollection<PasswordEntry> _passwordEntries;
+
 
         public MainWindow(
             ICryptographicManager cryptoManager, 
-            IRepository<PasswordEntry> passwordEntryRepository)
+            IRepository<PasswordEntry> passwordEntryRepository,
+            IRepository<MasterPassword> masterPasswordEntryRepository)
         {
             _cryptoManager = cryptoManager;
             _passwordEntryRepository = passwordEntryRepository;
 
             InitializeComponent();
             Loaded += MainWindow_Loaded;
+            _masterPasswordEntryRepository = masterPasswordEntryRepository;
         }
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            //if (!SessionManager.ValidateSession(_sessionToken))
-            //{
-            //    MessageBox.Show("Session expired or invalid. Please log in again.", "Session Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            //    // Consider redirecting the user back to the LoginWindow or closing the application
-            //    return;
-            //}
-            //else
-            //{
-            //    InitializePasswordEntriesList();
-            //}
-
             try
             {
                 var dek = SecureSessionService.GetDEK();
@@ -58,7 +52,7 @@ namespace APass.Wpf
         }
         private void AddPassword_Click(object sender, RoutedEventArgs e)
         {
-            AddPasswordWindow addPasswordWindow = new AddPasswordWindow(_cryptoManager, _passwordEntryRepository);
+            AddPasswordWindow addPasswordWindow = new AddPasswordWindow(_cryptoManager, _passwordEntryRepository, _masterPasswordEntryRepository);
             var result = addPasswordWindow.ShowDialog();
 
             if (result == true)
@@ -92,6 +86,10 @@ namespace APass.Wpf
                     originalToolTip.IsOpen = false;
                 }
             }
+            catch (InvalidOperationException ex)
+            {
+                RedirectUserToLogin("Session has expired, please log in again.");
+            }
             catch (Exception ex)
             {
                 MessageBox.Show("Failed to decrypt password or session expired.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -121,11 +119,53 @@ namespace APass.Wpf
                 }
             }
         }
+        private void ShowPassword_Checked(object sender, RoutedEventArgs e)
+        {
+            if (sender is CheckBox checkBox && checkBox.CommandParameter is PasswordEntry entry)
+            {
+                var panel = (StackPanel)checkBox.Parent;
+                var passwordTextBlock = (TextBlock)panel.Children[1];
+
+                try
+                {
+                    var encryptedData = Convert.FromBase64String(entry.Password);
+                    var dek = SecureSessionService.GetDEK();
+                    var decryptedBytes = _cryptoManager.Decrypt(encryptedData, dek);
+                    passwordTextBlock.Text = Encoding.UTF8.GetString(decryptedBytes);
+                }
+                catch(InvalidOperationException ex)
+                {
+                    RedirectUserToLogin("Session has expired, please log in again.");
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Failed to decrypt password.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+        }
+
+        private void ShowPassword_Unchecked(object sender, RoutedEventArgs e)
+        {
+            if (sender is CheckBox checkBox)
+            {
+                var panel = (StackPanel)checkBox.Parent;
+                var passwordTextBlock = (TextBlock)panel.Children[1];
+                passwordTextBlock.Text = "********";
+            }
+        }
+        private void RedirectUserToLogin(string message)
+        {
+            MessageBox.Show(message, "Session Expired", MessageBoxButton.OK, MessageBoxImage.Information);
+            LoginWindow loginWindow = new LoginWindow(_cryptoManager, _passwordEntryRepository, _masterPasswordEntryRepository);
+            loginWindow.Show();
+            this.Close();
+        }
+
         protected override void OnClosed(EventArgs e)
         {
             base.OnClosed(e);
-            SecureSessionService.ClearDEK(); // Clear the DEK securely
-            Application.Current.Shutdown(); // Exit the application
+            SecureSessionService.ClearDEK();
+            //Application.Current.Shutdown(); // Exit the application
         }
     }
 }

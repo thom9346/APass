@@ -16,7 +16,6 @@ namespace APass.Core.Services
 
             using (RandomNumberGenerator rng = RandomNumberGenerator.Create())
             {
-                // fill the array with cryptographically secure random bytes
                 rng.GetBytes(randomBytes);
             }
             return randomBytes;
@@ -36,11 +35,9 @@ namespace APass.Core.Services
                 aesCbc.Mode = CipherMode.CBC;
                 aesCbc.Padding = PaddingMode.PKCS7;
 
-                // Extract the IV from the beginning of the data
                 var iv = new byte[aesCbc.BlockSize / 8];
                 Buffer.BlockCopy(dataToDecrypt, 0, iv, 0, iv.Length);
 
-                // Extract the actual data (skip the IV part)
                 var actualData = new byte[dataToDecrypt.Length - iv.Length];
                 Buffer.BlockCopy(dataToDecrypt, iv.Length, actualData, 0, actualData.Length);
 
@@ -75,7 +72,6 @@ namespace APass.Core.Services
 
                 byte[] encryptedData;
 
-                // Encrypt the data
                 using (var encryptor = aesCbc.CreateEncryptor(aesCbc.Key, iv))
                 using (var msEncrypt = new MemoryStream())
                 {
@@ -86,7 +82,6 @@ namespace APass.Core.Services
                     encryptedData = msEncrypt.ToArray();
                 }
 
-                // Concatenate IV and encrypted message
                 var combinedIvEncData = new byte[iv.Length + encryptedData.Length];
                 Buffer.BlockCopy(iv, 0, combinedIvEncData, 0, iv.Length);
                 Buffer.BlockCopy(encryptedData, 0, combinedIvEncData, iv.Length, encryptedData.Length);

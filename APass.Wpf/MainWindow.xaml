@@ -23,7 +23,23 @@
                     <GridViewColumn Header="ID" DisplayMemberBinding="{Binding ID}" Width="50"/>
                     <GridViewColumn Header="Website" DisplayMemberBinding="{Binding Website}" Width="120"/>
                     <GridViewColumn Header="Username" DisplayMemberBinding="{Binding Username}" Width="120"/>
-                    <GridViewColumn Header="Password" DisplayMemberBinding="{Binding Password}" Width="150"/>
+                    <GridViewColumn Header="Password" Width="200">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <CheckBox VerticalAlignment="Center"
+                          Checked="ShowPassword_Checked"
+                          Unchecked="ShowPassword_Unchecked"
+                          CommandParameter="{Binding}">
+                                        <CheckBox.ToolTip>
+                                            <ToolTip Content="Show/Hide Password"/>
+                                        </CheckBox.ToolTip>
+                                    </CheckBox>
+                                    <TextBlock Text="********" VerticalAlignment="Center" Margin="5,0,0,0" Name="PasswordText"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
                     <GridViewColumn Header="Actions" Width="Auto">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>

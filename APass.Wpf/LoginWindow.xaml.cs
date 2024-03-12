@@ -30,8 +30,13 @@ namespace APass.Wpf
 
             if (isValid)
             {
-                MainWindow mainWindow = new MainWindow(_cryptoManager, _passwordEntryRepository);
-                mainWindow.Show();
+                // Check if MainWindow is already open
+                var mainWindow = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
+                if (mainWindow == null)
+                {
+                    mainWindow = new MainWindow(_cryptoManager, _passwordEntryRepository, _masterPasswordEntryRepository);
+                    mainWindow.Show();
+                }
                 this.Close();
             }
             else

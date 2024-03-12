@@ -15,13 +15,15 @@ namespace APass.Wpf
     {
         private readonly ICryptographicManager _cryptoManager;
         private IRepository<PasswordEntry> _passwordEntryRepository;
+        private IRepository<MasterPassword> _masterPasswordEntryRepository;
 
         public PasswordEntry NewPasswordEntry { get; private set; }
-        public AddPasswordWindow(ICryptographicManager cryptoManager, IRepository<PasswordEntry> passwordEntryRepository)
+        public AddPasswordWindow(ICryptographicManager cryptoManager, IRepository<PasswordEntry> passwordEntryRepository, IRepository<MasterPassword> masterPasswordEntryRepository)
         {
             _cryptoManager = cryptoManager;
             _passwordEntryRepository = passwordEntryRepository;
             InitializeComponent();
+            _masterPasswordEntryRepository = masterPasswordEntryRepository;
         }
         private void Add_Click(object sender, RoutedEventArgs e)
         {
@@ -33,13 +35,9 @@ namespace APass.Wpf
 
                 var dek = SecureSessionService.GetDEK();
 
-                // Convert the plaintext password to a byte array
                 var plaintextBytes = Encoding.UTF8.GetBytes(plaintextPassword);
-
-                // Encrypt the password
                 var encryptedPasswordWithIV = _cryptoManager.Encrypt(plaintextBytes, dek);
 
-                // Convert encrypted byte array to a base64 string for storage
                 var encryptedPasswordBase64 = Convert.ToBase64String(encryptedPasswordWithIV);
 
                 NewPasswordEntry = new PasswordEntry
@@ -53,10 +51,20 @@ namespace APass.Wpf
                 this.DialogResult = true; // Indicate successful entry
                 this.Close();
             }
+            catch (InvalidOperationException ex)
+            {
+                OpenLoginWindow("Session has expired, please log in again.");
+            }
             catch (Exception ex)
             {
                 MessageBox.Show($"Failed to add password: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+        private void OpenLoginWindow(string message)
+        {
+            MessageBox.Show(message, "Session Expired", MessageBoxButton.OK, MessageBoxImage.Information);
+            LoginWindow loginWindow = new LoginWindow(_cryptoManager, _passwordEntryRepository, _masterPasswordEntryRepository);
+            loginWindow.Show();
         }
         private void Button_MouseDown(object sender, MouseButtonEventArgs e)
         {

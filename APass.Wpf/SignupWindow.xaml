@@ -23,6 +23,6 @@
         <TextBlock x:Name="PasswordStrengthText" Grid.Row="3" Margin="0,0,0,10" TextAlignment="Center"/>
         <TextBlock Text="Confirm Master Password:" Grid.Row="4" Margin="0,0,0,5"/>
         <PasswordBox x:Name="ConfirmPasswordBox" Grid.Row="5" Margin="0,0,0,10"/>
-        <Button Content="Create" HorizontalAlignment="Center" Grid.Row="6" Margin="0,20,0,0" Click="Create_Click" Width="260"/>
+        <Button Content="Create" HorizontalAlignment="Center" Grid.Row="6" Margin="0,20,0,0" Click="Create_Click" Width="260" IsDefault="True"/>
     </Grid>
 </Window>
