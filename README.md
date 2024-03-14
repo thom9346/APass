@@ -12,22 +12,27 @@ _Note: Upon running the application for the first time a SQLite database will be
 ## Screenshots Of The Application
 
 #### First page - Login
-When you first start up the application, you should see a login page: ![LoginPage](./Images/first_page.png)
+When you first start up the application, you should see a login page: 
+![LoginPage](./Images/first_page.png)
 
 #### Second page - Sign up
-Since you don't have a master password yet, you will have to create one on the sign up page: ![SignUpPage](./Images/signup_window.png)
+Since you don't have a master password yet, you will have to create one on the sign up page: 
+![SignUpPage](./Images/signup_window.png)
 
  _Note: here is a random password that fulfills the requirements. You can copy-paste it into the application for testing purposes: `@zoaZZ*dT1(bCUqCP*yl9^(2MZp2VN`_ 
 
 #### Third page - Logged In
-After signing up, you can log in with your master page, and you will then see the main window. This is where all your passwords will be shown. Note that there will not be any data upon logging in, the image taken here is after adding passwords ![MainWindow](./Images/main_window_with_info.png)
+After signing up, you can log in with your master page, and you will then see the main window. This is where all your passwords will be shown. Note that there will not be any data upon logging in, the image taken here is after adding passwords 
+![MainWindow](./Images/main_window_with_info.png)
 
 On this page you also have some options. "Copy" will decrypt the password and copy it to your clipboard.
 The delete button will prompt a pop-up, where you can delete an entry from the database after clicking "Yes".
-The checkbox will show you the decrypted password in plain text as shown here: ![CheckBox](./Images/showpw_main.png)
+The checkbox will show you the decrypted password in plain text as shown here: 
+![CheckBox](./Images/showpw_main.png)
 
 #### Fourth page - Adding new passwords
-You can add new passwords by clicking the `Add Password` button in the Main Window. Doing so will prompt you a pop-up where you can input a new password to save in the manager. You can also generate a cryptographically secure password from here. ![AddPasswordWindow](./Images/addPw_window.png)
+You can add new passwords by clicking the `Add Password` button in the Main Window. Doing so will prompt you a pop-up where you can input a new password to save in the manager. You can also generate a cryptographically secure password from here. 
+![AddPasswordWindow](./Images/addPw_window.png)
 
 # Discussion about security
 
