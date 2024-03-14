@@ -48,12 +48,12 @@ You can add new passwords by clicking the `Add Password` button in the Main Wind
 Generally these threat actors aim to steal sensitive data (like passwords/account details). The aim of this application is to reduce that risk. There is a few key-points that help against this:
 
 1. The master password is not stored, not even as a hash. But rather I store an encrypted `Data Encryption Key`. I use AES-256-CBC for encryption.
-This ensures that even if an attacker gains access to the database, it remains unintelligible without the proper decryption key. A rainbow table or brute force attack will not be effective.
+This ensures that even if an attacker gains access to the database, it remains unintelligible without the proper decryption key. A rainbow table or brute force attack would not be effective.
+One important note here, is that the database is stored locally, so if an attacker gained access to the database, they could easily bypass the "login" window from the application and see all the encrypted passwords. But as stated, they remain impossible to decrypt without the decryption key.
 
 2. Generate strong, unique passwords for different websites. One of the main aim of the password manager is to greatly reduce the amount you re-use your password on different sites. This password manager can generate strong passwords and keep track of them. This protects against actors who take advantage of data breaches.
 
-3. Since this is completely offline, a Man-in-the-Middle attacks is not a security risk. (Being offline also comes with some limitations, of course. More on this later)
-
+3. Since this is completely offline, a Man-in-the-Middle attacks is not a security risk. (Being offline also comes with some limitations, of course)
 ## Security Model
 
 ### Creating the Master Password
@@ -86,7 +86,7 @@ The Process:
 ### PBKDF2 for Key Derivation
 PBKDF2 (Password-Based Key Derivation Function 2) with HMAC-SHA-512 as the underlying hash function is what i chose for KDF. I choose to use 10 000 iterations, which seems to strike a decent balance between resistance to brute-force attacks and performance. 
 
-I had a thought about using Argon2id for KDF instead. After all, why wouldn't you use a state-of-the-art hashing technology? The main reason I ultimately chose against it, is because there is no native .NET library implementation of it. You would have to use a third-party library like [Koncsious.Security.Cryptography](https://github.com/kmaragon/Konscious.Security.Cryptography) which haven't been updated in 2 years. This is not necessarily a problem, and from my understanding it still works completely fine with .NET 8.0. However, if I can avoid using third-party libraries that seemingly aren't getting updated I would prefer that.
+I had a thought about using Argon2id for KDF instead. After all, why wouldn't you use a state-of-the-art hashing technology? The main reason I ultimately chose against it, is because there is no native .NET library implementation of it. You would have to use a third-party library like [Koncsious.Security.Cryptography](https://github.com/kmaragon/Konscious.Security.Cryptography) which haven't been updated in 2 years. This is not necessarily a problem, and from my understanding it still works completely fine with .NET 8.0. However, if I can avoid using third-party libraries that seemingly aren't getting updated I would prefer that. Especially since the added protecting gained from Argon2id doesn't seem crucial for this application to remain secure
 
 Besides, PBKDF2 with HMAC-SHA-512 is still (currently) considered secure and the implementation is very simple.
 
@@ -97,7 +97,7 @@ I chose this because AES-256 is widely used and recognized for its strength and 
 
 CBC mode is the slightly simpler version of the bit more advanced version "Galios/Counter Mode" (GCM). GCM Could provide some further benefits, especially because it provides an authentication tag that can be used to verify the authenticity of the entire message that was encrypted. Furthermore the Counter Mode(CTR) allows for parallel processing, which could improve the performance for both encryption and decryption tasks.
 
-However, AES-256 with CBC mode is still a secure encryption method, it is the older version so it may provide some more compatibility than the newer GCM. In general however, I do think for the majority of cases (as well as for APass) GCM is the better choice.
+However, AES-256 with CBC mode is still a secure encryption method. It is the older version so it may provide some more compatibility than the newer GCM. In general however, I do think for the majority of cases (as well as for APass) GCM is the better choice.
 
 ## Pitfalls / Limitation of the solution
 For this simple password managers, there is some limitations and pitfalls that are outside the scope of the assignment. 
@@ -105,7 +105,7 @@ For this simple password managers, there is some limitations and pitfalls that a
 ### 1. Storing the DEK In-Memory
 Security is often a trade-off. This application is no different.
 
-Once a user logs in with their master password, the encrypted DEK gets decrypted and stored in memory. This is necessary, because we need the DEK to decrypt the passwords stored inside the password manager. If we decided not to store it in memory, the user would have to re-enter their master password every time they needed to encrypt or decrypt passwords within the application. This may however allow sophistacated memory attacks to retrieve the DEK.
+Once a user logs in with their master password, the encrypted DEK gets decrypted and stored in memory. This is necessary, because we need the DEK to decrypt the passwords stored inside the password manager. If we decided not to store it in memory, the user would have to re-enter their master password every time they needed to encrypt or decrypt passwords within the application. This may, however, allow sophistacated memory attacks to retrieve the DEK.
 
 To mitigate the risks this may cause, the DEK is only stored in memory for a limited time of 10 minutes. Afterwards the user will be prompted to re-enter their master password. This fixed session timeout of 10 minutes may not be optimal for all use cases. Something like dynamic session management based on user activity or risk analysis could provide better security usability trade-offs. That is outside the scope of this assignment though.
 
@@ -115,9 +115,12 @@ This application does not have a Two-Factor Authentication(2FA) system. Adding 2
 ### 3. No look-up table for signing up with a new Master Password
 There are certain requirements that must be met for creating a master password. It must have a "score" of at least 65, include a special character, number and a capital letter. The scoring system is based on different factors such as length, special characters, numbers, etc. 
 
-There is room for improvement though, as the solution does not checked for passwords that have been leaked previously. An example: "P@sSw0rD!" may look like a decent password to the application, but should still be considered weak as it is a common password that have been leaked. An idea is to use the [Have I Been Pwned API](https://haveibeenpwned.com/API/v3) to improve the requirements of the password.
+There is room for improvement though, as the solution does not check for passwords that have been leaked previously. An example: "P@sSw0rD!" may look like a decent password to the application, but should still be considered weak as it is a common password that have been leaked. An idea is to use the [Have I Been Pwned API](https://haveibeenpwned.com/API/v3) to improve the requirements of the password.
 
 ### 4. The Human Factor - Forgetting the master password
 Forgot your master password? Too bad!
 
 That is unfortauntely the reality for this application. If you forget your master password, there is no way to recover it. Many websites simply have a `Forgot Your Password?` type of button. For password managers, the process behind the scenes has to work a bit differently since the encryption is based on the master password. [LastPass](https://blog.lastpass.com/posts/2022/03/forgot-your-password-your-guide-to-lastpass-account-recovery) solves this in a smart way, where they use secure, local data to "prove" the users identity and facilitate the re encryption of their vault with a new master password. 
+
+### 5. Only one user
+The password manager can currently only handle one single user per deviece. 
