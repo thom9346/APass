@@ -45,7 +45,7 @@ namespace APass.Wpf
         {
             var folderPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
             var appFolderPath = Path.Combine(folderPath, "APass");
-            var dbPath = Path.Combine(appFolderPath, "passwordManager.db");
+            var dbPath = Path.Combine(appFolderPath, "passwordManager_APass_SSD.db");
 
             if (!Directory.Exists(appFolderPath))
             {

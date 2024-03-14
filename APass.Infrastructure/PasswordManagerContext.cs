@@ -14,7 +14,7 @@ namespace APass.Infrastructure
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            var dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "passwordManager.db");
+            var dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "passwordManager_APass_SSD.db");
             optionsBuilder.UseSqlite($"Data Source={dbPath}");
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
