@@ -97,7 +97,7 @@ I chose this because AES-256 is widely used and recognized for its strength and 
 
 CBC mode is the slightly simpler version of the bit more advanced version "Galios/Counter Mode" (GCM). GCM Could provide some further benefits, especially because it provides an authentication tag that can be used to verify the authenticity of the entire message that was encrypted. Furthermore the Counter Mode(CTR) allows for parallel processing, which could improve the performance for both encryption and decryption tasks.
 
-However, AES-256 with CBC mode is still a secure encryption method. It is the older version so it may provide some more compatibility than the newer GCM. In general however, I do think for the majority of cases (as well as for APass) GCM is the better choice.
+However, AES-256 with CBC mode is still a secure encryption method. It is the older version so it may provide some more compatibility than the newer GCM. In general however, I do think for the majority of cases (as well as for APass) GCM is the better choice. I did not refactor it to use GCM instead because of time constraints. 
 
 ## Pitfalls / Limitation of the solution
 For this simple password managers, there is some limitations and pitfalls that are outside the scope of the assignment. 
