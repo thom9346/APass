@@ -51,7 +51,7 @@ Generally these threat actors aim to steal sensitive data (like passwords/accoun
 This ensures that even if an attacker gains access to the database, it remains unintelligible without the proper decryption key. A rainbow table or brute force attack would not be effective.
 One important note here, is that the database is stored locally, so if an attacker gained access to the database, they could easily bypass the "login" window from the application and see all the encrypted passwords. But as stated, they remain impossible to decrypt without the decryption key.
 
-2. Generate strong, unique passwords for different websites. One of the main aim of the password manager is to greatly reduce the amount you re-use your password on different sites. This password manager can generate strong passwords and keep track of them. This protects against actors who take advantage of data breaches.
+2. Generate strong, unique passwords for different websites. One of the main goals of the password manager is to greatly reduce the amount you re-use your password on different sites. This password manager can generate strong passwords and keep track of them. This protects against actors who take advantage of data breaches.
 
 3. Since this is completely offline, a Man-in-the-Middle attacks is not a security risk. (Being offline also comes with some limitations, of course)
 ## Security Model
