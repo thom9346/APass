@@ -8,7 +8,7 @@ The aim of the application is to provide a simple and secure local application t
 ## How To Run
 Open the solution file `APass.sln` in Visual Studio. From here simply run the application using visual studio ![Run](./Images/run_button.png)
 
-_Note: Upon running the application for the first time a SQLite database will be generated in `%LOCALAPPDATA%` on Windows. The path will be different on other OS, but it stores the database in a location that is  conventional of the operating system's norms for user data_
+_Note: Upon running the application for the first time a SQLite database will be generated in `%LOCALAPPDATA%`_
 
 ## Screenshots Of The Application
 
