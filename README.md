@@ -25,7 +25,7 @@ Since you don't have a master password yet, you will have to create one on the s
  _Note: here is a random password that fulfills the requirements. You can copy-paste it into the application for testing purposes: `@zoaZZ*dT1(bCUqCP*yl9^(2MZp2VN`_ 
 
 #### Third page - Logged In
-After signing up, you can log in with your master page, and you will then see the main window. This is where all your passwords will be shown. Note that there will not be any data upon logging in, the image taken here is after adding passwords 
+After signing up, you can log in with your master password, and you will then see the main window. This is where all your passwords will be shown. Note that there will not be any data upon logging in, the image taken here is after adding passwords 
 
 ![MainWindow](./Images/main_window_with_info.png)
 
